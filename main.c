@@ -69,6 +69,9 @@ return(Tempstr);
 // Added by Eric Wedaa to exit after 60 seconds of no activity 
 // from forked process
 void alarm_handler(int signum){
+// I have NO idea why this isn't logging to syslog, but as
+// long as it exits, I guess I'm ok with it.
+	openlog("ptelnetd",LOG_PID|LOG_NDELAY,LOG_AUTH);
 	syslog(Settings.ErrorLogLevel,"Exiting on timeout now");
 	exit;
 }
