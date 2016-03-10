@@ -9,6 +9,11 @@
 #include <sys/wait.h>
 
 
+#include <unistd.h>
+#include <signal.h>
+#include <sys/signal.h>
+
+
 #define USER_ADD 1
 #define USER_DEL 2
 #define USER_LIST 3
@@ -61,6 +66,12 @@ ListDestroy(Vars,DestroyString);
 return(Tempstr);
 }
 
+// Added by Eric Wedaa to exit after 60 seconds of no activity 
+// from forked process
+void alarm_handler(int signum){
+	syslog(Settings.ErrorLogLevel,"Exiting on timeout now");
+	exit;
+}
 
 int Login(TSession *Session)
 {
@@ -71,6 +82,7 @@ time_t Duration, Start, Now, LastActivity;
 
 Session->User=CopyStr(Session->User,NULL);
 Session->Password=CopyStr(Session->Password,NULL);
+alarm(60);
 
 //Clear out any crap
 Tempstr=SetStrLen(Tempstr,4096);
@@ -121,6 +133,7 @@ else if (Settings.Flags & FLAG_HONEYPOT){
 	//Original syslog(Settings.ErrorLogLevel,"%s@%s login denied (honeypot mode): user=%s pass=%s",Session->User,Session->ClientIP,Session->User,Session->Password);
 	//Eric Wedaa added the following line to log to the LongTail honeypot consolidation server
 	syslog(Settings.ErrorLogLevel,"IP: %s TelnetLog: Username:%s Password:%s",Session->ClientIP,Session->User,Session->Password);
+	alarm(60);
 }
 else if (
 					(! (Session->Flags & FLAG_DENYAUTH)) &&
