@@ -135,7 +135,7 @@ if ((Settings.Flags & FLAG_LOCALONLY) && (! StrLen(Session->ClientMAC)))
 else if (Settings.Flags & FLAG_HONEYPOT){
 	//Original syslog(Settings.ErrorLogLevel,"%s@%s login denied (honeypot mode): user=%s pass=%s",Session->User,Session->ClientIP,Session->User,Session->Password);
 	//Eric Wedaa added the following line to log to the LongTail honeypot consolidation server
-	syslog(Settings.ErrorLogLevel,"IP: %s TelnetLog: Username:%s Password:%s",Session->ClientIP,Session->User,Session->Password);
+	syslog(Settings.ErrorLogLevel,"IP: %s TelnetLog: Username: %s Password: %s",Session->ClientIP,Session->User,Session->Password);
 	alarm(60);
 }
 else if (
