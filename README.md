@@ -35,6 +35,7 @@ using a consolidation server's ) rsyslog.conf file.
 
 
 This sets the date format to a more easily parsable format:
+
 	2016-03-06T04:33:43-05:00 ecdal2 sshd-22[25692]: IP: 183.3.202.102 PassLog: Username: root Password: leather
 
 Please note the date stamp is YYYY-MM-DDTHH:MM:SS-GMT_offset.  Please note the capital "T" as the delimeter
@@ -43,9 +44,11 @@ from date to hour.
 Logging Line Format
 --------------
 The log line format is as follows:
+
   YYYY-MM-DD<T>:HH:MM:SS.<optional milliseconds><DASH>HH:MM<SPACE>HOSTNAME<SPACE>ptelnetd[<PID>]:<SPACE>IP:<SPACE>127.0.0.1<SPACE>TelnetLog:<SPACE>Username:<SPACE>Username_tried<SPACE>Password:<SPACE>Password_tried
 
 For Example:
+
   2016-03-10T12:26:18.899244-05:00 localhost ptelnetd[9836]: IP: 127.0.0.1 TelnetLog: Username: TEW Password: TEWEW
 
 
