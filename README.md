@@ -43,10 +43,10 @@ from date to hour.
 Logging Line Format
 --------------
 The log line format is as follows:
-	YYYY-MM-DD<T>:HH:MM:SS.<optional milliseconds><DASH>HH:MM<SPACE>HOSTNAME<SPACE>ptelnetd[<PID>]:<SPACE>IP:<SPACE>127.0.0.1<SPACE>TelnetLog:<SPACE>Username:<SPACE>Username_tried<SPACE>Password:<SPACE>Password_tried
+  YYYY-MM-DD<T>:HH:MM:SS.<optional milliseconds><DASH>HH:MM<SPACE>HOSTNAME<SPACE>ptelnetd[<PID>]:<SPACE>IP:<SPACE>127.0.0.1<SPACE>TelnetLog:<SPACE>Username:<SPACE>Username_tried<SPACE>Password:<SPACE>Password_tried
 
 For Example:
-	2016-03-10T12:26:18.899244-05:00 localhost ptelnetd[9836]: IP: 127.0.0.1 TelnetLog: Username: TEW Password: TEWEW
+  2016-03-10T12:26:18.899244-05:00 localhost ptelnetd[9836]: IP: 127.0.0.1 TelnetLog: Username: TEW Password: TEWEW
 
 
 Licensing
