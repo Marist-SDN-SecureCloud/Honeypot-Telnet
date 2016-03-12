@@ -25,6 +25,21 @@ download and run it from
 This will configure, make, and install ptelnetd into /usr/local/sbin/ptelnetd
 and add a startup line to /etc/rc.local to start ptelnetd after a reboot.
 
+Rsyslog Note
+--------------
+
+1) If you are using rsyslog, please use the following line in your honeypot's (and if you are
+using a consolidation server's ) rsyslog.conf file.
+
+  $ActionFileDefaultTemplate RSYSLOG_FileFormat
+
+
+This sets the date format to a more easily parsable format:
+	2016-03-06T04:33:43-05:00 ecdal2 sshd-22[25692]: IP: 183.3.202.102 PassLog: Username: root Password: leather
+
+Please note the date stamp is YYYY-MM-DDTHH:MM:SS-GMT_offset.  Please note the capital "T" as the delimeter
+from date to hour.
+
 Licensing
 --------------
 Minor Modifications Copyright (C) 2016 Eric Wedaa
