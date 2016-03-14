@@ -135,6 +135,7 @@ if ((Settings.Flags & FLAG_LOCALONLY) && (! StrLen(Session->ClientMAC)))
 else if (Settings.Flags & FLAG_HONEYPOT){
 	//Original syslog(Settings.ErrorLogLevel,"%s@%s login denied (honeypot mode): user=%s pass=%s",Session->User,Session->ClientIP,Session->User,Session->Password);
 	//Eric Wedaa added the following line to log to the LongTail honeypot consolidation server
+	openlog("ptelnetd",LOG_PID|LOG_NDELAY,LOG_AUTH);
 	syslog(Settings.ErrorLogLevel,"IP: %s TelnetLog: Username: %s Password: %s",Session->ClientIP,Session->User,Session->Password);
 	alarm(60);
 }
@@ -604,6 +605,7 @@ int i;
 	GetClientHardwareAddress(Session);
 	Session->ClientHost=CopyStr(Session->ClientHost,IPStrToHostName(Session->ClientIP));
 
+	openlog("ptelnetd",LOG_PID|LOG_NDELAY,LOG_AUTH);
 	if (StrLen(Session->ClientMAC)) syslog(Settings.InfoLogLevel,"connection from: %s (%s / %s)", Session->ClientHost, Session->ClientIP, Session->ClientMAC);
 	else syslog(Settings.InfoLogLevel,"connection from: %s (%s)", Session->ClientHost, Session->ClientIP);
 
@@ -633,7 +635,10 @@ int i;
 			if (Login(Session)) break;
 			printf("\r\nLogin incorrect\r\n"); fflush(NULL);
 
-			if (! (Settings.Flags & FLAG_DENYAUTH))  syslog(Settings.ErrorLogLevel,"%s@%s login failed: tries used %d/%d",Session->User,Session->ClientIP,i,Settings.AuthTries);
+			if (! (Settings.Flags & FLAG_DENYAUTH)){
+				openlog("ptelnetd",LOG_PID|LOG_NDELAY,LOG_AUTH);
+			  syslog(Settings.ErrorLogLevel,"%s@%s login failed: tries used %d/%d",Session->User,Session->ClientIP,i,Settings.AuthTries);
+			}
 			sleep(Settings.AuthDelay);
 		}
 	}
