@@ -1,0 +1,93 @@
+#!/bin/bash
+# This is the init script for starting up the
+#  Ptelnetd Honeypot
+#
+# chkconfig: 345 91 10
+# description: Starts and stops the ptelnetd daemon.
+#
+# This is a slightly modified version of the script found on this page:
+# http://www.satollo.net/how-to-install-tomcat-and-java-6-on-centos-5-2
+#
+
+# Point this to your Tomcat installation.
+proc="ptelnetd"
+startup=/opt/tomcat/bin/startup.sh
+shutdown=/opt/tomcat/bin/shutdown.sh
+
+#AWK only works when called from a function like this.
+_getPID()
+{
+  echo `ps ax | grep -v grep | grep "ptelnetd" | grep "honeypot" | awk '{print $1}'`
+}
+PID="$(_getPID)"
+
+start(){
+  if [ "$PID" ]
+  then
+    echo "$proc is already running with PID $PID."
+  else
+    echo -n $"Starting $proc service: "
+		/usr/local/sbin/ptelnetd -honeypot
+    echo
+  fi
+}
+
+stop(){
+  if [ "$PID" ]
+  then
+    echo -n "Stopping $proc service: "
+		kill $PID
+    echo
+    limit=10
+    PID="$(_getPID)"
+    while [ "$PID" ]
+    do
+      if [ $limit == 0 ]
+      then
+        echo "$proc taking too long to shutdown, killing the process..."
+        kill -9 $PID
+        break
+      fi
+      sleep 2
+      limit=$((limit-1))
+      PID="$(_getPID)"
+    done
+  else
+    echo "$proc is not currently running."
+  fi
+}
+
+restart(){
+  stop
+  start
+}
+
+status(){
+ if [ "$PID" ]
+ then
+  echo "$proc is running with PID $PID."
+ else
+  echo "$proc is not running."
+ fi
+}
+
+# See how we were called.
+case "$1" in
+start)
+ start
+ ;;
+stop)
+ stop
+ ;;
+status) #It works now!
+ status
+ ;;
+restart)
+ restart
+ ;;
+*)
+ echo $"Usage: $0 {start|stop|status|restart}"
+ exit 1
+esac
+
+exit 0
