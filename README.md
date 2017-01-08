@@ -25,6 +25,15 @@ download and run it from
 This will configure, make, and install ptelnetd into /usr/local/sbin/ptelnetd
 and add a startup line to /etc/rc.local to start ptelnetd after a reboot.
 
+BUGS
+--------------
+1) For as yet unknown reasons ptelnetd hangs and refuses to accept new
+inbound connections.  I thought I had fixed this with a timeout in
+main.c, but it still happens intermittently.  For the moment the workaround
+is to a line to crontab to call an (as yet unwritten) script to kill off the 
+ptelnet process and then restart it.
+
+
 Rsyslog Note
 --------------
 
