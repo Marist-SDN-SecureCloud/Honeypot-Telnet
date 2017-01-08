@@ -59,6 +59,8 @@ stop(){
 
 restart(){
   stop
+	echo "Sleeping 10 to allow ptelnetd to stop"
+	sleep 10
   start
 }
 
