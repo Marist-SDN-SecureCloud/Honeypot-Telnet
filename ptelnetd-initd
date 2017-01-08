@@ -17,7 +17,7 @@ shutdown=/opt/tomcat/bin/shutdown.sh
 #AWK only works when called from a function like this.
 _getPID()
 {
-  echo `ps ax | grep -v grep | grep "ptelnetd" | grep "honeypot" | awk '{print $1}'`
+  echo `ps -ef | grep -v grep | grep "ptelnetd" | grep "honeypot" | awk '{print $2}'`
 }
 PID="$(_getPID)"
 
