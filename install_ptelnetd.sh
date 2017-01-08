@@ -35,6 +35,9 @@ wget https://github.com/wedaa/LongTail-Telnet-honeypot-v2/raw/master/paranoid-te
 tar -xf paranoid-telnetd-0.4.tgz
 cd paranoid-telnetd-0.4
 
+cp ptelnetd-initd /etc/init.d
+chmod a+rx /etc/init.d/ptelnetd-initd
+
 mv main.c main.c.orig
 wget https://raw.githubusercontent.com/wedaa/LongTail-Telnet-honeypot-v2/master/main.c
 
