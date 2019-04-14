@@ -9,11 +9,16 @@ RUN apt-get update -y \
     && apt-get install -y \
         build-essential \
         python3-pip \
-        # zlib1g-dev \ 
         tzdata \
         wget \
         gcc \
         && pip3 install --upgrade pip
+
+EXPOSE 23
+
+# Set the TimeZone 
+RUN cp /usr/share/zoneinfo/America/New_York /etc/localtime \
+    && dpkg-reconfigure tzdata
 
 WORKDIR /usr/local/source/ptelnetd
 
@@ -23,16 +28,18 @@ RUN wget https://github.com/wedaa/LongTail-Telnet-honeypot-v2/raw/master/paranoi
 
 WORKDIR /usr/local/source/ptelnetd/paranoid-telnetd-0.4
 
-RUN cp ptelnetd-initd /etc/init.d \
-    && chmod a+rx /etc/init.d/ptelnetd-initd \
-    && mv main.c main.c.orig \
-
 COPY ./src/main.c main.c
+COPY ./src/client.c client.c
+COPY ./src/ptelnetd.sh ptelnetd.sh
 
 RUN ./configure \
     && make \
     && cp ptelnetd /usr/local/sbin/ptelnetd \
 	&& chmod a+rx /usr/local/sbin/ptelnetd
+
+
+RUN cp ./ptelnetd.sh /etc/init.d \
+    && chmod +x /etc/init.d/ptelnetd.sh
 
 # Setup TCP Server
 WORKDIR /TcpServer
@@ -41,5 +48,7 @@ COPY ./TcpServer .
 RUN pip install -r requirements.txt \
     && chmod +x init.sh
 
-ENTRYPOINT [ "/bin/bash" ]
-CMD [ "./init.sh" ]
+
+# ENTRYPOINT [ "/bin/bash" ]
+# CMD [ "./init.sh" ]
+CMD [ "/bin/bash" ]

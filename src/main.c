@@ -8,11 +8,17 @@
 #include <sys/ioctl.h>
 #include <sys/wait.h>
 
-
 #include <unistd.h>
 #include <signal.h>
 #include <sys/signal.h>
 
+/* Added By Daniel N Gisolfi 
+for use in logging to a file */
+#include <stdio.h>
+#include <stdlib.h>
+
+// Added by Daniel Gisolfi -- this is to send logs to the TCP server
+#include "client.c"
 
 #define USER_ADD 1
 #define USER_DEL 2
@@ -136,7 +142,9 @@ else if (Settings.Flags & FLAG_HONEYPOT){
 	//Original syslog(Settings.ErrorLogLevel,"%s@%s login denied (honeypot mode): user=%s pass=%s",Session->User,Session->ClientIP,Session->User,Session->Password);
 	//Eric Wedaa added the following line to log to the LongTail honeypot consolidation server
 	openlog("ptelnetd",LOG_PID|LOG_NDELAY,LOG_AUTH);
-	syslog(Settings.ErrorLogLevel,"IP: %s TelnetLog: Username: %s Password: %s",Session->ClientIP,Session->User,Session->Password);
+	// syslog(Settings.ErrorLogLevel,"IP: %s TelnetLog: Username: %s Password: %s",Session->ClientIP,Session->User,Session->Password);
+    // Daniel N Gisolfi added the following line to enable logging to the TCP stream
+    stream(Session->ClientIP,Session->User,Session->Password);
 	alarm(60);
 }
 else if (
@@ -737,6 +745,37 @@ waitpid(-1,NULL,WNOHANG);
 }
 
 
+// Daniel Gisolfi Added...
+int stream(char *client_ip, char *username, char *password) {
+    // Log the connection the a physical file for later
+    // Should appear in the root directory.
+    FILE *f;    
+    f = fopen("telnet-honeypot.log", "a+");
+    if (f == NULL){
+        // We cant print a message or the client will see it
+        exit(1);
+    } else {
+        fprintf(f, "%s,%s,%s\n", 
+            client_ip,
+            username,
+            password
+        );
+        fclose(f);
+    }
+   
+    char log_data[10024];
+
+    sprintf(log_data, "%s,%s,%s", 
+        client_ip,
+        username,
+        password
+    );
+   
+    // Send the data to the TCP server
+    transmitMessage(5050 ,log_data);
+}
+
+
 
 main(int argc, char *argv[])
 {
@@ -746,7 +785,7 @@ g_argv=argv;
 //LOG_NDELAY to open connection immediately. That way we inherit the connection
 //when we chroot
 //Eric Wedaa modified the following line to log to the LongTail honeypot consolidation server
-openlog("ptelnetd",LOG_PID|LOG_NDELAY,LOG_AUTH);
+// openlog("ptelnetd",LOG_PID|LOG_NDELAY,LOG_AUTH);
 
 SettingsInit();
 SettingsParseCommandLine(argc, argv);
@@ -762,4 +801,3 @@ if (Settings.Flags & FLAG_INETD)
 }
 else PTelnetDServerMode();
 }
-

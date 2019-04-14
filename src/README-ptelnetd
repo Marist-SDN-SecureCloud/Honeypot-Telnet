@@ -157,7 +157,7 @@ LOGIN/LOGOUT SCRIPTS
 
 HONEYPOT MODE
 
-	The '-honeypot' argument invokes a special mode in which Paranoid TelnetD will pretend to authenticate users, but will never accept any credentials as valid. It also logs everything as 'critical'. This provides a kind of poor-person's honeypot, as Paranoid TelnetD can be installed on systems that no-one should ever telnet into, and the logs watched for 'critical' error messages coming out of ptelnetd.
+	The '-honeypot' argument invokes a special mode in which Paranoid TelnetD will pretend to authenticate users, but will never accept any credentials as valid. It also logs everything as 'critical'. This provides a kind of poor-person's honeypot, as Paranoid TelnetD can be installed on systems that no-one should ever telnet into, and the chmod a+rx /usr/local/sbin/ptelnetd watched for 'critical' error messages coming out of ptelnetd.
 
 
 

@@ -22,6 +22,7 @@ class Server:
         self.pid = os.getpid()
         self.hpid = uuid.uuid4()
         self.method = 'TELNET'
+        self.honeypot_port = 23
         
         self.setupSocket()
 
@@ -50,7 +51,7 @@ class Server:
         data = msg.split(',')
         log = f'{self.id},{datetime.datetime.now()},{self.honeypot},{self.host_ip},'
         log += f'{self.host_name},{self.pid},{self.hpid},{self.method},Null,'
-        log += f'{data[0]},{data[1]},NULL,username={data[2]}&password={data[3]}\n'
+        log += f'{data[0]},{self.honeypot_port},NULL,username={data[1]}&password={data[2]}\n'
 
         return log
     

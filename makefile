@@ -21,6 +21,10 @@ clean:
 build: intro
 	@docker build -t $(IMAGE) .
 
+dev: build
+	@docker run -it --rm --name $(CONTAINER) -p23:23 -v$(PWD)/test:/usr/local/source/ptelnetd/test $(IMAGE)
+
+
 # Run the honeypot and TCP server
 run: build
 	@docker run -it --rm --name $(CONTAINER) -p23:23 $(IMAGE)
