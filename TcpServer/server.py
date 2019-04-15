@@ -6,6 +6,7 @@ import sys
 import uuid
 import socket
 import datetime
+from SendToQueue import *
 
 class Server:
     def __init__(self, port):
@@ -16,7 +17,7 @@ class Server:
         # Honeypot details
         self.honeypot = 'Telnet-Honeypot'
         self.honeypot_version = os.getenv('VERSION', '02')
-        self.id = self.honeypot[:3] + self.honeypot_version
+        self.id = 'TEL' + self.honeypot_version
         self.host_ip = os.getenv('HOST_IP', '0.0.0.0')
         self.host_name = socket.gethostname()
         self.pid = os.getpid()
@@ -75,7 +76,8 @@ class Server:
 
                 log = self.buildLog(msg)
                 print(log)
-                conn.send(f'Message Received'.encode())
+                status = sendMsg(log)
+                conn.send(f'Message Received Status: {status}'.encode())
                 conn.close()
         except KeyboardInterrupt:
             print('Server: Shutting Down')

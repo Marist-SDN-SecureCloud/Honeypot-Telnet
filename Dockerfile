@@ -2,8 +2,12 @@ FROM ubuntu:18.04
 MAINTAINER Daniel Nicolas Gisolfi
 
 ENV DEBIAN_FRONTEND=noninteractive
+
 ENV VERSION=02
-ENV HOST_IP=0.0.0.0
+ENV HOST_IP=
+ENV USER=
+ENV PASS=
+ENV PORT=
 
 RUN apt-get update -y \
     && apt-get install -y \
@@ -32,7 +36,7 @@ WORKDIR /usr/local/source/ptelnetd/paranoid-telnetd-0.4
 COPY ./src/main.c main.c
 COPY ./src/client.c client.c
 COPY ./src/ptelnetd-initd ptelnetd-initd
-COPY  ./src/ptelnetd-cron /etc/cron.d/ptelnetd-cron
+COPY ./src/ptelnetd-cron /etc/cron.d/ptelnetd-cron
 
 RUN cp ptelnetd-initd /etc/init.d \
 && chmod a+rx /etc/init.d/ptelnetd-initd

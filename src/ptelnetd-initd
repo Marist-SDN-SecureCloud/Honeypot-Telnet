@@ -1,34 +1,62 @@
 #!/bin/bash
 
+# This is the init script for starting up the
+#  Ptelnetd Honeypot
+#
+# chkconfig: 345 91 10
+# description: Starts and stops the ptelnetd daemon.
+#
+# This is a slightly modified version of the script found on this page:
+# http://www.satollo.net/how-to-install-tomcat-and-java-6-on-centos-5-2
+#
+
 PROG=ptelnetd
 
 _getPID(){
-    echo `ps ax | grep "/usr/sbin/ptelnetd -honeypot" | head -1 | sed 's/^[^0-9]*\([0-9]\+\).*$/\1/'`
+   echo `ps -ef | grep -v grep | grep "ptelnetd" | grep "honeypot" | awk '{print $2}'`
 }
 PID="$(_getPID)"
 
 start(){
     if [ "$PID" ]
     then
-        echo "$PROG is already running"
+        echo "$PROG is already running with PID $PID."
     else
-        echo "Starting $PROG"
-        /usr/sbin/ptelnetd -honeypot
+        echo -n $"Starting $PROG service: "
+		/usr/sbin/ptelnetd -honeypot
+        echo
     fi
 }
 
 stop(){
     if [ "$PID" ]
     then
-        echo "killing $PROG"
-        kill $PID
+        echo -n "Stopping $PROG service: "
+		kill $PID
+        echo
+        limit=10
+        PID="$(_getPID)"
+        while [ "$PID" ]
+        do
+            if [ $limit == 0 ]
+            then
+                echo "$PROG taking too long to shutdown, killing the process..."
+                kill -9 $PID
+                break
+            fi
+            sleep 2
+            limit=$((limit-1))
+            PID="$(_getPID)"
+        done
     else
-        echo "$PROG is not running"
+        echo "$PROG is not currently running."
     fi
 }
+
 restart(){
     stop
 	sleep 10
+    PID="$(_getPID)"
     start
 }
 
