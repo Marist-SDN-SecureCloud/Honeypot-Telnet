@@ -749,19 +749,21 @@ waitpid(-1,NULL,WNOHANG);
 int stream(char *client_ip, char *username, char *password) {
     // Log the connection the a physical file for later
     // Should appear in the root directory.
-    FILE *f;    
-    f = fopen("telnet-honeypot.log", "a+");
-    if (f == NULL){
-        // We cant print a message or the client will see it
-        exit(1);
-    } else {
-        fprintf(f, "%s,%s,%s\n", 
-            client_ip,
-            username,
-            password
-        );
-        fclose(f);
-    }
+    
+    // For some reason, maybe due to a lack of permsions logging causes the 
+    // server to cancel connections...so I have disabled it for now.
+     
+    // FILE *f;    
+    // f = fopen("telnet-honeypot.log", "a+");
+    // if (f != NULL){
+    //     fprintf(f, "%s,%s,%s\n", 
+    //         client_ip,
+    //         username,
+    //         password
+    //     ); 
+    //     fclose(f);
+    // }
+   
    
     char log_data[10024];
 

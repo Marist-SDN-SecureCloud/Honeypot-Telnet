@@ -22,8 +22,7 @@ build: intro
 	@docker build -t $(IMAGE) .
 
 dev: build
-	@docker run -it --rm --name $(CONTAINER) -p23:23 -v$(PWD)/test:/usr/local/source/ptelnetd/test $(IMAGE)
-
+	@docker run -it --rm --name $(CONTAINER) -p23:23 -v$(PWD)/dev:/usr/local/source/ptelnetd/dev $(IMAGE)
 
 # Run the honeypot and TCP server
 run: build
@@ -31,7 +30,7 @@ run: build
 
 # Push Docker image to Docker Hub
 publish: build
-	@docker tag $(IMAGE) $(USER)/$(IMAGE):11.23
+	@docker tag $(IMAGE) $(USER)/$(IMAGE):tag
 	@docker push $(USER)/$(IMAGE)
 
 .PHONY: intro clean build run

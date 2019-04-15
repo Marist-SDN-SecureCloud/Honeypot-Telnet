@@ -1,0 +1,12 @@
+# docker-compose.yaml
+# 2019-04-15
+# Author:  Daniel Nicolas Gisolfi
+
+version: "2"
+services:
+    telnet-honeypot:
+      image: dgisolfi/telnet_honeypot:tag
+      restart: always
+      ports:
+        - "23:23"
+      container_name: telnet-honeypot-prod

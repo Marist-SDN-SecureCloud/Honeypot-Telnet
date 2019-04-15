@@ -9,7 +9,7 @@
 #define VER 1
 
 int transmitMessage(int port, char *msg) {
-    printf("SocketStream Client v%d\n", VER );
+    // printf("SocketStream Client v%d\n", VER );
 
     struct sockaddr_in address; 
     int sock, read_value;
@@ -17,7 +17,7 @@ int transmitMessage(int port, char *msg) {
     char server_response[1024] = {0}; 
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) { 
-        printf("Socket creation error\n"); 
+        // printf("Socket creation error\n"); 
         // exit(EXIT_FAILURE);
     } 
    
@@ -33,7 +33,7 @@ int transmitMessage(int port, char *msg) {
     } 
    
     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) { 
-        printf("Connection to Socket Failed\n"); 
+        // printf("Connection to Socket Failed\n"); 
         // exit(EXIT_FAILURE);
     } else {
         send(sock, msg, strlen(msg) , 0 ); 

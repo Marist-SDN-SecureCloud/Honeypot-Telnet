@@ -1,71 +1,25 @@
-README for LongTail-Telnet-honeypot-v2
-==============
-
-What LongTail-Telnet-honeypot-v2 does
---------------
-Telnet-honeypot is a telnet honeypot which logs attempts to a
-to syslog in the LongTail logging format. 
-
-It can be started with the following commandline.
-
-	/usr/local/sbin/ptelnetd -honeypot
-
-It is based entirely on
-
-	https://sites.google.com/site/columscode/home/ParanoidTelnetD
-
-which is Copyright (C) 2014 Colum Paget
-
-Installing the Honeypot
---------------
-I have an installation script which will help significantly and you can
-download and run it from
-	wget https://raw.githubusercontent.com/wedaa/LongTail-Telnet-honeypot-v2/master/install_ptelnetd.sh
-
-This will configure, make, and install ptelnetd into /usr/local/sbin/ptelnetd
-and add a startup line to /etc/rc.local to start ptelnetd after a reboot.
-
-BUGS
---------------
-1) For as yet unknown reasons ptelnetd hangs and refuses to accept new
-inbound connections.  I thought I had fixed this with a timeout in
-main.c, but it still happens intermittently.  For the moment the workaround
-is to a line to crontab to call on /etc/init.d/ptelnetd-initd once a day
-to restart it  (/etc/init.d/ptelnetd-initd restart).
 
 
-Rsyslog Note
---------------
+# Telnet-Honeypot
 
-1) If you are using rsyslog, please use the following line in your honeypot's (and if you are
-using a consolidation server's ) rsyslog.conf file.
+### Authors
 
-  $ActionFileDefaultTemplate RSYSLOG_FileFormat
+**Eric Wedaa** - *Original Honeypot Creation* - [wedaa](https://github.com/wedaa)
 
+**Daniel Gisolfi** - *Docker implementation and TCP Stream Addition* - [dgisolfi](https://github.com/dgisolfi)
 
-This sets the date format to a more easily parsable format:
+## Overview
 
-	2016-03-06T04:33:43-05:00 ecdal2 sshd-22[25692]: IP: 183.3.202.102 PassLog: Username: root Password: leather
+This honeypot is a custom implementation of a telnet dameon which has been modified to always reject username and password attempts but logs the attempts. Building on what Eric Wedaa created I have added a TCP Stream to capture attacks in realtime from the honeypot and forward them to a python server for parsing, analyzing, etc. Additionally, I have created a Docker image for the honeypot to allow for quick deployment on a server.
 
-Please note the date stamp is YYYY-MM-DDTHH:MM:SS-GMT_offset.  Please note the capital "T" as the delimeter
-from date to hour.
+## Deployment
 
-Logging Line Format
---------------
-The log line format is as follows:
+To deploy the honeypot using docker, the included make file can be used. Run `make` in the root of the repository to clean, build and run the honeypot from source.
 
-  YYYY-MM-DD<T>:HH:MM:SS.<optional milliseconds><DASH>HH:MM<SPACE>HOSTNAME<SPACE>ptelnetd[<PID>]:<SPACE>IP:<SPACE>127.0.0.1<SPACE>TelnetLog:<SPACE>Username:<SPACE>Username_tried<SPACE>Password:<SPACE>Password_tried
+### Docker Compose
 
-For Example:
+Alternatively, docker compose can be used, to do so move the `docker-compose.yaml` file found in the root of the directory to the host machine and run:
 
-  2016-03-10T12:26:18.899244-05:00 localhost ptelnetd[9836]: IP: 127.0.0.1 TelnetLog: Username: TEW Password: TEWEW
-
-
-Licensing
---------------
-Minor Modifications Copyright (C) 2016 Eric Wedaa
-
-OTHERWISE
-
-Copyright (C) 2014 Colum Paget, colums.projects@gmail.com, http://www.cjpaget.co.uk
-
+```
+docker-compose up
+```

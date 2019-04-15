@@ -3,7 +3,7 @@ MAINTAINER Daniel Nicolas Gisolfi
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV VERSION=02
-ENV HOST_IP=10.11.17.23
+ENV HOST_IP=0.0.0.0
 
 RUN apt-get update -y \
     && apt-get install -y \
@@ -30,16 +30,11 @@ WORKDIR /usr/local/source/ptelnetd/paranoid-telnetd-0.4
 
 COPY ./src/main.c main.c
 COPY ./src/client.c client.c
-COPY ./src/ptelnetd.sh ptelnetd.sh
 
 RUN ./configure \
     && make \
-    && cp ptelnetd /usr/local/sbin/ptelnetd \
-	&& chmod a+rx /usr/local/sbin/ptelnetd
-
-
-RUN cp ./ptelnetd.sh /etc/init.d \
-    && chmod +x /etc/init.d/ptelnetd.sh
+    && cp ptelnetd /usr/sbin \
+	&& chmod a+rwx /usr/sbin/ptelnetd
 
 # Setup TCP Server
 WORKDIR /TcpServer
@@ -48,7 +43,5 @@ COPY ./TcpServer .
 RUN pip install -r requirements.txt \
     && chmod +x init.sh
 
-
-# ENTRYPOINT [ "/bin/bash" ]
-# CMD [ "./init.sh" ]
-CMD [ "/bin/bash" ]
+ENTRYPOINT [ "/bin/bash" ]
+CMD [ "./init.sh" ]
