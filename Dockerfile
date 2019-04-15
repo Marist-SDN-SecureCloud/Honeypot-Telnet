@@ -10,6 +10,7 @@ RUN apt-get update -y \
         build-essential \
         python3-pip \
         tzdata \
+        cron \
         wget \
         gcc \
         && pip3 install --upgrade pip
@@ -30,6 +31,15 @@ WORKDIR /usr/local/source/ptelnetd/paranoid-telnetd-0.4
 
 COPY ./src/main.c main.c
 COPY ./src/client.c client.c
+COPY ./src/ptelnetd-initd ptelnetd-initd
+COPY  ./src/ptelnetd-cron /etc/cron.d/ptelnetd-cron
+
+RUN cp ptelnetd-initd /etc/init.d \
+&& chmod a+rx /etc/init.d/ptelnetd-initd
+
+RUN chmod a+x /etc/cron.d/ptelnetd-cron \
+&& crontab /etc/cron.d/ptelnetd-cron \
+&& touch /var/log/cron.log
 
 RUN ./configure \
     && make \

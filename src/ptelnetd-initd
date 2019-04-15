@@ -1,0 +1,50 @@
+#!/bin/bash
+
+PROG=ptelnetd
+
+_getPID(){
+    echo `ps ax | grep "/usr/sbin/ptelnetd -honeypot" | head -1 | sed 's/^[^0-9]*\([0-9]\+\).*$/\1/'`
+}
+PID="$(_getPID)"
+
+start(){
+    if [ "$PID" ]
+    then
+        echo "$PROG is already running"
+    else
+        echo "Starting $PROG"
+        /usr/sbin/ptelnetd -honeypot
+    fi
+}
+
+stop(){
+    if [ "$PID" ]
+    then
+        echo "killing $PROG"
+        kill $PID
+    else
+        echo "$PROG is not running"
+    fi
+}
+restart(){
+    stop
+	sleep 10
+    start
+}
+
+case "$1" in
+start)
+ start
+ ;;
+stop)
+ stop
+ ;;
+restart)
+ restart
+ ;;
+*)
+ echo $"Usage: $0 {start|stop|restart}"
+ exit 1
+esac
+
+exit 0
